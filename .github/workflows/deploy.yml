@@ -5,7 +5,7 @@ on:
     branches: [ main ]
 
 jobs:
-  build_frontend:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
@@ -24,30 +24,16 @@ jobs:
           npm ci
           ng build --configuration=production
 
-      - name: Substituir pasta dist no project-root/frontend
+      - name: Mover pasta dist para project-root/frontend
         run: |
-          rm -rf frontend
           mkdir -p frontend
-          cp -r frontend/doc-brasil/dist/doc-brasil/* frontend/
+          if [ -d "frontend/doc-brasil/dist/doc-brasil" ]; then
+            cp -r frontend/doc-brasil/dist/doc-brasil/* frontend/
+          else
+            echo "❌ Pasta 'dist/doc-brasil' não encontrada."
+            exit 1
+          fi
 
-      - name: Enviar frontend para a VM
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.VM_SSH_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.VM_HOST }} >> ~/.ssh/known_hosts
-
-          rsync -avz --delete \
-            --exclude '.git' \
-            --exclude 'node_modules' \
-            --exclude '.github' \
-            -e "ssh -i ~/.ssh/id_rsa" ./ azureuser@${{ secrets.VM_HOST }}:/home/azureuser/associados-app
-
-  deploy_backend:
-    runs-on: ubuntu-latest
-    needs: build_frontend
-
-    steps:
       - name: Configurar SSH
         run: |
           mkdir -p ~/.ssh
@@ -55,11 +41,15 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.VM_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Rebuild backend e subir containers
+      - name: Enviar arquivos para a VM
+        run: |
+          rsync -avz --delete -e "ssh -i ~/.ssh/id_rsa" ./ azureuser@${{ secrets.VM_HOST }}:/home/azureuser/associados-app
+
+      - name: Reconstruir containers com Docker Compose
         run: |
           ssh -i ~/.ssh/id_rsa azureuser@${{ secrets.VM_HOST }} << 'EOF'
             cd /home/azureuser/associados-app
-            docker-compose down
+            docker compose down
             docker-compose build --no-cache
-            docker-compose up -d
+            docker compose up -d
           EOF
