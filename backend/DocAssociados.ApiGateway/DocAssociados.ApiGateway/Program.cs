@@ -14,8 +14,8 @@ builder.Services.AddCors(options =>
         policy =>
         {
             policy.WithOrigins("http://20.197.248.228:8080")
-                  .AllowAnyMethod()
-                  .AllowAnyHeader();
+                  .WithHeaders("X-Api-Key")
+                  .AllowAnyMethod();
         });
 });
 
