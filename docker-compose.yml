@@ -65,6 +65,8 @@ services:
       - "3311:3306"
     volumes:
       - associados_data:/var/lib/mysql
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
     networks:
       - app-network
     restart: always
@@ -81,6 +83,8 @@ services:
       - "3312:3306"
     volumes:
       - identity_data:/var/lib/mysql
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
     networks:
       - app-network
     restart: always
