@@ -1,5 +1,6 @@
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
+using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,14 +29,14 @@ var app = builder.Build();
 
 app.Use(async (context, next) =>
 {
+    Console.WriteLine("Respondendo requisao cors");
+    Debug.WriteLine("Respondendo requisao cors");
     if (context.Request.Method == HttpMethods.Options)
     {
         context.Response.StatusCode = StatusCodes.Status204NoContent;
-
-        context.Response.Headers["Access-Control-Allow-Origin"] = "http://20.197.248.228:8080";
-        context.Response.Headers["Access-Control-Allow-Headers"] = "x-api-key, content-type";
-        context.Response.Headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS";
-
+        context.Response.Headers.Add("Access-Control-Allow-Origin", "http://20.197.248.228:8080");
+        context.Response.Headers.Add("Access-Control-Allow-Headers", "x-api-key, content-type");
+        context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
         return;
     }
 
