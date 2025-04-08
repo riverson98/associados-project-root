@@ -6,7 +6,7 @@ import { RegisterResponseModel } from '../../models/auth/RegisterResponseModel';
 import { Router } from '@angular/router';
 import { RegisterModel } from '../../models/auth/registerModel';
 import { LoginResponseModel } from '../../models/auth/loginResponseModel';
-import { jwtDecode } from 'jwt-decode';
+import { jwtDecode, JwtPayload } from 'jwt-decode';
 import { environmentDev } from '../../environment/environment';
 
 @Injectable({
@@ -56,7 +56,7 @@ export class AuthService {
     const token = localStorage.getItem('token');
     
     if(token){
-      const decodedToken = jwtDecode(token);
+      const decodedToken = jwtDecode(token) as JwtPayload & { uid: string };
       return decodedToken.uid || undefined;
     }
     return undefined;
@@ -76,7 +76,7 @@ export class AuthService {
   getUserEmail(): string | undefined {
     const token = localStorage.getItem('token');
     if (token) {
-      const decodedToken: any = jwtDecode(token);
+      const decodedToken: any = jwtDecode(token) as JwtPayload & { email: string };;
       return decodedToken.email || null;
     }
     return undefined;
