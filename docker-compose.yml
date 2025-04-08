@@ -62,6 +62,7 @@ services:
       MYSQL_DATABASE: associados
       MYSQL_USER: root
       MYSQL_PASSWORD: <4P.7A9oeM
+      TZ: America/Sao_Paulo
     ports:
       - "3311:3306"
     volumes:
@@ -81,6 +82,7 @@ services:
       MYSQL_DATABASE: associadosAuthdb
       MYSQL_USER: root
       MYSQL_PASSWORD: P-QwF2jht&
+      TZ: America/Sao_Paulo
     ports:
       - "3312:3306"
     volumes:
