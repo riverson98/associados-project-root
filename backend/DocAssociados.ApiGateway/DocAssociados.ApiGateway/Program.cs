@@ -28,6 +28,17 @@ var app = builder.Build();
 
 app.UseCors("FrontendPolicy");
 
+app.Use(async (context, next) =>
+{
+    if (context.Request.Method == HttpMethods.Options)
+    {
+        context.Response.StatusCode = StatusCodes.Status204NoContent;
+        return;
+    }
+
+    await next();
+});
+
 app.UseRouting();
 
 // Configure the HTTP request pipeline.
