@@ -13,7 +13,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("FrontendPolicy",
         policy =>
         {
-            policy.WithOrigins("http://localhost:8080")
+            policy.WithOrigins("http://associados_api-gateway:8090")
                   .AllowAnyMethod()
                   .AllowAnyHeader()
                   .AllowCredentials();
