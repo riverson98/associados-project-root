@@ -24,6 +24,9 @@ jobs:
           npm install
           ng build --configuration=production
 
+      - name: Listar arquivos gerados no dist
+        run: ls -la frontend/doc-brasil/dist
+
       - name: Mover pasta dist para project-root/frontend
         run: |
           rm -rf frontend
