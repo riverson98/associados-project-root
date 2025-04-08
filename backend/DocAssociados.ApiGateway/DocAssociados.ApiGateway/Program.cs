@@ -28,13 +28,13 @@ var app = builder.Build();
 
 app.UseCors("FrontendPolicy");
 
+app.UseRouting();
+
 // Configure the HTTP request pipeline.
 
 //app.UseHttpsRedirection();
 
-app.UseAuthorization();
-
-app.MapControllers();
+//app.UseAuthorization();
 
 await app.UseOcelot();
 
