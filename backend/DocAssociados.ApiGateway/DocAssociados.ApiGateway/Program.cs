@@ -27,28 +27,7 @@ builder.Services.AddOcelot();
 
 var app = builder.Build();
 
-Console.WriteLine("🔥 Build novo carregado");
-Debug.WriteLine("🔥 Build novo carregado");
-
-app.Use(async (context, next) =>
-{
-    Console.WriteLine("Respondendo requisao cors");
-    Debug.WriteLine("Respondendo requisao cors");
-    if (context.Request.Method == HttpMethods.Options)
-    {
-        context.Response.StatusCode = StatusCodes.Status204NoContent;
-        context.Response.Headers.Add("Access-Control-Allow-Origin", "http://20.197.248.228:8080");
-        context.Response.Headers.Add("Access-Control-Allow-Headers", "x-api-key, content-type");
-        context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-        return;
-    }
-
-    await next();
-});
-
 app.UseCors("FrontendPolicy");
-
-app.UseRouting();
 
 // Configure the HTTP request pipeline.
 
