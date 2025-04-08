@@ -9,7 +9,7 @@ import { RegisterResponseModel } from "../../models/auth/RegisterResponseModel";
   providedIn: 'root'
 })
 export class UserService {
-    apiUrl:string = 'http://associados_api-gateway:8090/associado';
+    apiUrl:string = 'http://20.197.248.228:8090/associado';
     headers:HttpHeaders = new HttpHeaders({
         'X-Api-Key': environmentDev.xApiKeyAssociados
     })
