@@ -29,9 +29,9 @@ jobs:
 
       - name: Mover pasta dist para project-root/frontend
         run: |
-          rm -rf frontend
+          rm -rf frontend/*
           mkdir -p frontend
-          cp -r frontend/doc-brasil/dist/doc-brasil/* ./frontend
+          cp -r ./frontend/doc-brasil/dist/doc-brasil/* ./frontend
 
       - name: Configurar SSH
         run: |
