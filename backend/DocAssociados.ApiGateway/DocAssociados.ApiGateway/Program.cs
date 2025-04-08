@@ -1,4 +1,4 @@
-using Ocelot.DependencyInjection;
+﻿using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 using System.Diagnostics;
 
@@ -26,6 +26,9 @@ builder.Configuration.AddJsonFile("ocelot.json", optional: false, reloadOnChange
 builder.Services.AddOcelot();
 
 var app = builder.Build();
+
+Console.WriteLine("🔥 Build novo carregado");
+Debug.WriteLine("🔥 Build novo carregado");
 
 app.Use(async (context, next) =>
 {
