@@ -34,10 +34,10 @@ app.Use(async (context, next) =>
     {
         context.Response.StatusCode = StatusCodes.Status204NoContent;
 
-        context.Response.Headers.Add("Access-Control-Allow-Origin", "http://20.197.248.228:8080");
-        context.Response.Headers.Add("Access-Control-Allow-Headers", "x-api-key, content-type");
-        context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-        
+        context.Response.Headers["Access-Control-Allow-Origin"] = "http://20.197.248.228:8080";
+        context.Response.Headers["Access-Control-Allow-Headers"] = "x-api-key, content-type";
+        context.Response.Headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS";
+
         return;
     }
 
