@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using System.Diagnostics;
 
 namespace DocAssociados.Infra.IoC;
 
@@ -19,6 +20,9 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration config)
     {
         var mySqlConnection = config.GetConnectionString("MySqlConnection");
+
+        Console.WriteLine($"MySql: {mySqlConnection}");
+        Debug.WriteLine($"MySql: {mySqlConnection}");
 
         services.AddLogging();
 
