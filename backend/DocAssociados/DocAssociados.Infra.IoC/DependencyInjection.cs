@@ -48,7 +48,11 @@ public static class DependencyInjection
                 sp.GetRequiredService<IOptions<AzureBlobStorageOpcoes>>().Value);
         services.AddSingleton(sp =>
                 sp.GetRequiredService<IOptions<AzureVaultConfig>>().Value);
-        
+
+        //insights
+        services.AddApplicationInsightsTelemetry();
+
+        //cache
         services.AddMemoryCache();
 
         return services;
