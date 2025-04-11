@@ -11,7 +11,7 @@
         }
       ],
       "DownstreamHeaderTransform": {
-        "X-Api-Key": "{X-Api-Key}"
+        "X-Api-Key": "a0OWFZ7zVSAKuR6ZCyF6pr2UXGAuTdQwdibpalLfPy8="
       }
     },
     {
@@ -25,7 +25,7 @@
         }
       ],
       "DownstreamHeaderTransform": {
-        "X-Api-Key": "{X-Api-Key}"
+        "X-Api-Key": "IRBSCgBhWZtwuF5FNzqrIiZR3yabvZTQ5B2PFf8So+c="
       }
     }
   ]

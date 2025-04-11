@@ -10,9 +10,7 @@
           "Port": 8080
         }
       ],
-      "DownstreamHeaderTransform": {
-        "X-Api-Key": "{X-Api-Key}"
-      },
+      "DelegatingHandlers": [ "AuthHandler" ],
       "RateLimitOptions": {
         "EnableRateLimiting": true,
         "ClientWhitelist": [ "admin" ],
@@ -30,9 +28,7 @@
           "Port": 8080
         }
       ],
-      "DownstreamHeaderTransform": {
-        "X-Api-Key": "{X-Api-Key}"
-      },
+      "DelegatingHandlers": [ "AssociadoHandler" ],
       "RateLimitOptions": {
         "EnableRateLimiting": true,
         "ClientWhitelist": [ "admin" ],
