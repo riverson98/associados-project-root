@@ -185,13 +185,10 @@ export class RegisterFormComponent implements OnInit{
   }
 
   verifyForm(event: Event, form: FormGroup):   void {
-    console.log("o formulario esta invalido:", form.invalid)
-    console.log("Formulario:", form.value)
     if (form.invalid) {
       event.preventDefault();
       form.markAllAsTouched();
     } else {
-      console.log("valor do form:", form);
       if(this.stepper.selectedIndex === 0){
         this.loading.show();
         this.verifyCodeRepresentationFormToSubmit(form).pipe(
@@ -209,7 +206,7 @@ export class RegisterFormComponent implements OnInit{
             }
             else
             this.showErrorMessage("Algo deu errado", true);
-            console.log(error);
+            event.preventDefault();
           }
         })
       }
