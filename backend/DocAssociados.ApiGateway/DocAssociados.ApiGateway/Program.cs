@@ -1,8 +1,37 @@
-﻿using Ocelot.DependencyInjection;
+﻿using Azure.Identity;
+using DocAssociados.ApiGateway.Config;
+using DocAssociados.ApiGateway.Handlers;
+using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 using System.Diagnostics;
 
 var builder = WebApplication.CreateBuilder(args);
+
+if (builder.Environment.IsProduction())
+{
+    var vaultUrl = builder.Configuration["AzureKeyVault:KeyVaultUrl"];
+    var uri = $"https://{vaultUrl}.vault.azure.net/";
+    
+    builder.Configuration.AddAzureKeyVault(
+    new Uri(uri),
+    new DefaultAzureCredential()
+    );
+
+    var apiKeyAuth = builder.Configuration["ChaveApiAssociadosAuth"];
+    var apiKeyAssociados = builder.Configuration["ChaveApiAssociados"];
+
+    if (string.IsNullOrEmpty(apiKeyAuth) || string.IsNullOrEmpty(apiKeyAssociados))
+        throw new InvalidOperationException("The api keys can't be null or empty");
+
+    builder.Services.AddSingleton(new ApiKeyContainer
+    {
+        AuthKey = apiKeyAuth,
+        AssociadoKey = apiKeyAssociados
+    });
+
+    builder.Services.AddTransient<AuthApiKeyHandler>();
+    builder.Services.AddTransient<AssociadoApiKeyHandler>();
+}
 
 // Add services to the container.
 

@@ -27,8 +27,8 @@ services:
       context: ./backend/DocAssociados.Identity
       dockerfile: DocAssociados.Identity.WebApi/Dockerfile
     container_name: associados-auth_service
-    ports:
-      - "8091:8080"
+    expose  :
+      - "8080"
     env_file:
       - .env.prod
     networks:
@@ -42,8 +42,8 @@ services:
       context: ./backend/DocAssociados
       dockerfile: DocAssociados.WebApi/Dockerfile
     container_name: associados_service
-    ports:
-      - "8092:8080"
+    expose:
+      - "8080"
     env_file:
       - .env.prod
     networks:
