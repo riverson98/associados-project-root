@@ -21,11 +21,6 @@ public static class DependencyInjection
     {
         var mySqlConnection = config.GetConnectionString("MySqlConnection");
 
-        Console.WriteLine($"MySql: {mySqlConnection}");
-        Debug.WriteLine($"MySql: {mySqlConnection}");
-
-        services.AddLogging();
-
         services.AddDbContext<AppDbContext>(options =>
                  options.UseMySql(mySqlConnection, ServerVersion.AutoDetect(mySqlConnection),
                  it => it.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName)));
@@ -60,6 +55,8 @@ public static class DependencyInjection
 
         //cache
         services.AddMemoryCache();
+
+        services.AddLogging();
 
         return services;
     }
