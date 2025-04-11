@@ -7,42 +7,31 @@ import { Router } from '@angular/router';
 import { RegisterModel } from '../../models/auth/registerModel';
 import { LoginResponseModel } from '../../models/auth/loginResponseModel';
 import { jwtDecode, JwtPayload } from 'jwt-decode';
-import { environmentDev } from '../../environment/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   apiUrl:string = 'http://20.197.248.228:8090/auth';
-  headers:HttpHeaders = new HttpHeaders({
-    'Content-Type': 'application/json',
-    'X-Api-Key': environmentDev.xApiKeyAuth
-  })
 
   constructor(private http:HttpClient, private router: Router) {}
   
   register(userData: RegisterResponseModel): Observable<RegisterResponseModel> {
      return this.http.post<RegisterResponseModel>(
-        `${this.apiUrl}/register`,
-         userData,
-        { headers: this.headers }
+        `${this.apiUrl}/register`, userData
     );
   }
 
   login(userData:RegisterModel): Observable<LoginResponseModel> {
     return this.http.post<LoginResponseModel>(
-        `${this.apiUrl}/login`, 
-        userData,
-        { headers: this.headers }
+        `${this.apiUrl}/login`, userData,
     );
   }
 
   refreshToken(): Observable<any> {
     const refreshToken = localStorage.getItem('refreshToken');
     return this.http.post(
-        `${this.apiUrl}/refreshtoken`, 
-        { refreshToken },
-        {headers: this.headers}
+        `${this.apiUrl}/refreshtoken`, { refreshToken },
     );
   }
 
