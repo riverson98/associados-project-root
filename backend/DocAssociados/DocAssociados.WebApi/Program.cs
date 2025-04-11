@@ -1,4 +1,4 @@
-using DocAssociados.Infra.IoC;
+﻿using DocAssociados.Infra.IoC;
 using DocAssociados.Service.Infra.CrossCutting.AzureIdentity;
 using DocAssociados.Service.Infra.CrossCutting.Config;
 using DocAssociados.Service.Infra.CrossCutting.Middles;
@@ -39,14 +39,13 @@ if (builder.Environment.IsProduction())
     KeyVaultStatic.Init(url);
     var apiKey = await KeyVaultStatic.GetSecretAsync("ChaveApiAssociados");
 
-    builder.Services.Configure<ApiSettings>(options =>
-    {
-        options.ApiKey = apiKey;
-    });
+    builder.Configuration["ApiSecurity:Key"] = apiKey;
 }
 
 builder.Services.AddInfrastructure(builder.Configuration);
 
+builder.Logging.AddFilter<Microsoft.Extensions.Logging.ApplicationInsights.ApplicationInsightsLoggerProvider>(
+    "", LogLevel.Information);
 
 var app = builder.Build();
 
@@ -71,4 +70,4 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
+await app.RunAsync();
