@@ -1,6 +1,5 @@
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { environmentDev } from "../../environment/environment";
 import { UserModel } from "../../models/user/userModel";
 import { Observable } from "rxjs";
 
@@ -8,10 +7,7 @@ import { Observable } from "rxjs";
   providedIn: 'root'
 })
 export class UserService {
-    apiUrl:string = 'http://20.197.248.228:8090/associado';
-    headers:HttpHeaders = new HttpHeaders({
-        'X-Api-Key': environmentDev.xApiKeyAssociados
-    })
+    apiUrl:string = 'http://localhost:8080/associado';
 
     constructor(private http:HttpClient) {
         
@@ -19,30 +15,25 @@ export class UserService {
 
     createNewUser(userData: FormData): Observable<UserModel> {
         return this.http.post<UserModel>(
-                `${this.apiUrl}`,
-                 userData,
-                { headers: this.headers }
+                `${this.apiUrl}`, userData
             );
     }
 
     getUserById(id: string): Observable<UserModel>{
         return this.http.get<UserModel>(
-            `${this.apiUrl}/${id}`,
-            { headers: this.headers }
+            `${this.apiUrl}/${id}`
         );
     }
 
     getUserCodeRepresentation(code: string): Observable<UserModel>{
         return this.http.get<UserModel>(
-            `${this.apiUrl}/busca-por-codigo-representante/${code}`,
-            { headers: this.headers }
+            `${this.apiUrl}/busca-por-codigo-representante/${code}`
         );
     }
 
     getUserWithAddressById(id: string): Observable<UserModel>{
         return this.http.get<UserModel>(
-            `${this.apiUrl}/com-detalhes/${id}`,
-            { headers: this.headers }
+            `${this.apiUrl}/com-detalhes/${id}`
         );
     }
 }
