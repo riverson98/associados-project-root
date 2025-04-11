@@ -65,7 +65,6 @@ jobs:
             --exclude="nginx/ssl/" \
             --exclude="nginx/certbot/" \
             --exclude="node_modules/" \
-            --exclude="**/dist/" \
             --exclude="bin" \
             --exclude="obj"
 
