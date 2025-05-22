@@ -19,11 +19,24 @@ stages:
     displayName: Build using docker-compose
     pool:
       name: vm-linux
-      vmImage: ubuntu-latest
     steps:
     - checkout: self
 
+    # Puxar secrets do Azure Key Vault
+    - task: AzureKeyVault@2
+      inputs:
+        azureSubscription: 'Azure subscription 1'
+        KeyVaultName: 'DocBrasilKeyVault'
+        SecretsFilter: 'AssociateDbPassword,AuthDbPassword,AssociateAuthKey,AssociateKey,AzureBlobContainerSecretKey,AzureSecretKey'
+        RunAsPreJob: true
+
     - script: |
+        echo "Remapeando variáveis..."
+        export MYSQL_ASSOCIADOS_PASSWORD=$AuthDbPassword
+        export MYSQL_ASSOCIADOS_AUTH_PASSWORD=$AssociateDbPassword
+        echo "MYSQL_ASSOCIADOS_PASSWORD = $MYSQL_ASSOCIADOS_PASSWORD"
+        echo "MYSQL_ASSOCIADOS_AUTH_PASSWORD = $MYSQL_ASSOCIADOS_AUTH_PASSWORD"
+        export PATH=$PATH:/usr/bin
         /usr/bin/docker-compose -f docker-compose-prod.yml build --no-cache
       workingDirectory: $(Build.SourcesDirectory)
       displayName: Build containers with docker-compose
