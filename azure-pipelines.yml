@@ -18,6 +18,7 @@ stages:
   - job: Build
     displayName: Build using docker-compose
     pool:
+      name: vm-linux
       vmImage: ubuntu-latest
     steps:
     - checkout: self
