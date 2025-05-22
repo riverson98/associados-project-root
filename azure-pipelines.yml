@@ -30,6 +30,12 @@ stages:
         RunAsPreJob: true
 
     - script: |
+        cd frontend/doc-brasil
+        npm install
+        npm run build -- --prod
+      displayName: 'Build frontend Angular'
+
+    - script: |
         echo "Remapeando variáveis..."
         export MYSQL_ASSOCIADOS_PASSWORD=$(AuthDbPassword)
         export MYSQL_ASSOCIADOS_AUTH_PASSWORD=$(AssociateDbPassword)
