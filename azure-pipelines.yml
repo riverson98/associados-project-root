@@ -1,0 +1,28 @@
+# Docker
+# Build a Docker image
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+trigger:
+- main
+
+resources:
+- repo: self
+
+variables:
+  tag: '$(Build.BuildId)'
+
+stages:
+- stage: Build
+  displayName: Build images with docker-compose
+  jobs:
+  - job: Build
+    displayName: Build using docker-compose
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    - checkout: self
+
+    - script: |
+        docker-compose -f docker-compose-prod.yml build --no-cache
+      workingDirectory: $(Build.SourcesDirectory)
+      displayName: Build containers with docker-compose
