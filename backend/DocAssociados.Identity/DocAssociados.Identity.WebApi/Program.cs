@@ -43,9 +43,9 @@ builder.Services.AddAuthentication(options =>
 
 if (builder.Environment.IsProduction())
 {
-    var url = new AzureVaultConfig() { KeyVaultUrl = "chavesapisecretas" };
+    var url = new AzureVaultConfig() { KeyVaultUrl = "DocBrasilKeyVault" };
     KeyVaultStatic.Init(url);
-    var apiKey = await KeyVaultStatic.GetSecretAsync("ChaveApiAssociadosAuth");
+    var apiKey = await KeyVaultStatic.GetSecretAsync("AssociateAuthKey");
 
     builder.Configuration["ApiSecurity:Key"] = apiKey;
 
