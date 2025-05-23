@@ -1,7 +1,3 @@
-# Docker
-# Build a Docker image
-# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
-
 trigger:
 - main
 
@@ -23,17 +19,16 @@ stages:
     - checkout: self
 
     - script: |
-        echo sudo chmod -R u+rwX /home/azureuser/linuxagent/_work/1/s/nginx/ssl 
-      displayName: Da permissao para o usuario root
-      RunAsPreJob: true
-
+        sudo chmod -R u+rwX /home/azureuser/linuxagent/_work/1/s/nginx/ssl
+      displayName: Dá permissão para o usuário root
+      runAsPreJob: true
 
     - task: AzureKeyVault@2
       inputs:
         azureSubscription: 'DevOps Service Connection'
         KeyVaultName: 'DocBrasilKeyVault'
         SecretsFilter: 'AssociateDbPassword,AuthDbPassword,AssociateAuthKey,AssociateKey,AzureBlobContainerSecretKey,AzureSecretKey'
-        RunAsPreJob: true
+      runAsPreJob: true
 
     - script: |
         cd frontend/doc-brasil
@@ -48,7 +43,7 @@ stages:
 
         export PATH=$PATH:/usr/bin
         /usr/bin/sudo docker compose -f docker-compose.yml -f docker-compose-prod.yml build --no-cache
-        /usr/bin/sudo docker compose -f docker-compose.yml -f docker-compose-prod.yml up
+        /usr/bin/sudo docker compose -f docker-compose.yml -f docker-compose-prod.yml up -d
       displayName: Build containers with docker-compose
       workingDirectory: $(Build.SourcesDirectory)
       env:
