@@ -21,6 +21,7 @@ stages:
       name: vm-linux
     steps:
     - checkout: self
+        echo sudo chmod -R u+rwX /home/azureuser/linuxagent/_work/1/s/nginx/ssl
 
     - task: AzureKeyVault@2
       inputs:
