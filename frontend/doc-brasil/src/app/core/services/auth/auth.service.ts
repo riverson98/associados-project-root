@@ -14,7 +14,7 @@ import { updatePassword } from '../../models/auth/updatePassword';
   providedIn: 'root'
 })
 export class AuthService {
-  apiUrl:string = 'http://localhost:5142/auth';
+  apiUrl:string = 'https://appdocdobrasil.com.br/auth';;
 
   constructor(private http:HttpClient, private router: Router) {}
   
