@@ -13,7 +13,7 @@ export class AddressService {
 
     getAddressByAssociateId(id: string): Observable<AddressModel>{
         return this.http.get<AddressModel>(
-           `${this.apiUrl}/${id}`
+           `${this.apiUrl}/busca-endereco/${id}`
         );
     }
 }
