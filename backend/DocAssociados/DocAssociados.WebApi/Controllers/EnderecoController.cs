@@ -21,7 +21,7 @@ namespace DocAssociados.Services.WebApi.Controllers
             _logger = logger;
         }
 
-        [HttpGet("{id:guid}")]
+        [HttpGet("busca-endereco/{id:guid}")]
         public async Task<ActionResult<EnderecoDto>> BuscaEnderecoDoAssociado(Guid id)
         {
             _logger.Info($"Buscando o endereco do associado com o ID: {id}");
