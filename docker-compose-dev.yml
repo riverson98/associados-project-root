@@ -59,7 +59,7 @@ services:
   associados_service-dev:
     build:
       context: ./backend/DocAssociados
-      dockerfile: DocAssociados.WebApi/Dockerfile
+      dockerfile: DocAssociados.WebApi/Dockerfile.dev
     container_name: associados_service-dev
     ports:
       - "8092:8080"

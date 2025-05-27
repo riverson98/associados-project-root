@@ -49,7 +49,6 @@ public class ServicoAssociado : Servico<AssociadoDto, Associado>, IServicoAssoci
             };
 
             await _httpClient.PostDefaultAsync(authApiUrl, body);
-
         }
 
         return _mapper.Map<AssociadoDto>(associadoAdicionado);
@@ -63,6 +62,39 @@ public class ServicoAssociado : Servico<AssociadoDto, Associado>, IServicoAssoci
         await _unityOfWork.CommitAsync();
 
         return _mapper.Map<AssociadoResumidoDto>(associadoAtualizado);
+    }
+
+    public async Task<UrlsDocumentosDto> AtualizaUrlDosDocumentosDoAssociadoAsync(Guid id)
+    {
+        var urlDosDocumentos = await _associadoRepositorio.BuscaUrlsDoAssociadoAsync(id);
+
+        var urlDosDocumentosDto = _mapper.Map<UrlsDocumentosDto>(urlDosDocumentos);
+        
+        var urlMap = new Dictionary<string?, Action<string>>
+        {
+            { urlDosDocumentos.ComprovanteDeResidenciaUpload, novaUrl => urlDosDocumentosDto.ComprovanteDeResidenciaUpload = novaUrl },
+            { urlDosDocumentos.UrlDoRequerimento,             novaUrl => urlDosDocumentosDto.UrlDoRequerimento = novaUrl },
+            { urlDosDocumentos.FichaAssociacaoUploadUrl,      novaUrl => urlDosDocumentosDto.FichaAssociacaoUploadUrl = novaUrl },
+            { urlDosDocumentos.TermoAdesaoUploadUrl,          novaUrl => urlDosDocumentosDto.TermoAdesaoUploadUrl = novaUrl },
+            { urlDosDocumentos.CpfUploadUrl,                  novaUrl => urlDosDocumentosDto.CpfUploadUrl = novaUrl }
+        };
+
+        var tasks = urlMap
+            .Where(kvp => !string.IsNullOrWhiteSpace(kvp.Key))
+            .Select(kvp => AtualizaTokenSas(kvp.Key!).ContinueWith(t =>
+            {
+                kvp.Value(t.Result);
+            }))
+            .ToList();
+
+        await Task.WhenAll(tasks);
+
+        var urlEntidade = _mapper.Map<UrlsDocumentos>(urlDosDocumentosDto);
+
+        await _associadoRepositorio.AtualizaUrlsDoAssociadoAsync(id, urlEntidade);
+        await _unityOfWork.CommitAsync();
+
+        return _mapper.Map<UrlsDocumentosDto>(urlEntidade);
     }
 
     public async Task<AssociadoDto> BuscaAssociadoComEnderecoAsync(Expression<Func<AssociadoDto, bool>> predicate)

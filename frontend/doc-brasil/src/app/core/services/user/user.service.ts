@@ -7,6 +7,7 @@ import { PaginationParamsResponse } from "../../models/paginationParams/paginati
 import { AssociateSummary } from "../../models/user/associateSummary";
 import { AssociadoResumidoDto } from "../../models/user/AssociadoResumidoDto";
 import { ProfilePhotoRequest } from "../../models/user/ProfilePhotoRequest";
+import { UrlUpdated } from "../../models/user/urlUpdated";
 
 @Injectable({
   providedIn: 'root'
@@ -115,6 +116,12 @@ export class UserService {
 
         return this.http.post<ProfilePhotoRequest>(
             `${this.apiUrl}/adiciona-foto-de-perfil/${userId}`, userDataPhoto
+        );
+    }
+    
+    updateDocsUrl(id: string): Observable<UrlUpdated>{
+      return this.http.put<UrlUpdated>(
+            `${this.apiUrl}/atualiza-urls/${id}`, {}
         );
     }
 

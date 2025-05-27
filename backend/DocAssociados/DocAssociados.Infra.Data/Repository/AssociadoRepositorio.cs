@@ -67,4 +67,30 @@ public class AssociadoRepositorio : Repositorio<Associado>, IAssociadoRepositori
                              })
                              .FirstOrDefaultAsync();
     }
+
+    public async Task<UrlsDocumentos> BuscaUrlsDoAssociadoAsync(Guid id)
+    {
+        return await _context.Set<Associado>()
+        .Where(a => a.Id == id)
+        .Select(a => new UrlsDocumentos(a.Endereco.ComprovanteDeResidenciaUpload, 
+                                        a.RequerimentoJudicialUrl, a.FichaAssociacaoUploadUrl, 
+                                        a.TermoDeAdessaoUploadUrl, a.CpfUploadUrl))
+        .FirstOrDefaultAsync();
+    }
+
+    public async Task AtualizaUrlsDoAssociadoAsync(Guid id, UrlsDocumentos urls)
+    {
+        var associado = await _context.Associado
+            .Where(a => a.Id == id)
+            .Include(a => a.Endereco)
+            .FirstOrDefaultAsync();
+
+        ArgumentNullException.ThrowIfNull("Nenhum associado encontrado com o ID fornecido.");
+
+
+        associado?.AtualizaUrls(urls.UrlDoRequerimento, urls.FichaAssociacaoUploadUrl,
+            urls.TermoAdesaoUploadUrl, urls.CpfUploadUrl);
+
+        associado?.Endereco.AtualizaUrl(urls.ComprovanteDeResidenciaUpload);
+    }
 }

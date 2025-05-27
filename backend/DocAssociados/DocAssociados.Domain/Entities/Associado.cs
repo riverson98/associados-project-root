@@ -75,6 +75,16 @@ public sealed class Associado
         RequerimentoJudicialUrl = requerimento;
     }
 
+    public void AtualizaUrls(string cpfUploadUrl, string termoDeAdessaoUrl, string fichaAssociacaoUrl, string requerimento)
+    {
+        ValidaDominio(cpfUploadUrl, termoDeAdessaoUrl, fichaAssociacaoUrl, requerimento);
+
+        CpfUploadUrl = cpfUploadUrl;
+        TermoDeAdessaoUploadUrl = termoDeAdessaoUrl;
+        FichaAssociacaoUploadUrl = fichaAssociacaoUrl;
+        RequerimentoJudicialUrl = requerimento;
+    }
+
     private void ValidaDominio(string nome, string email, DateOnly dataDeNascimento, string genero, int funcao, int status, string cpf,
                                 string? cpfUploadUrl, string codigoRepresentante, string codigoRepresentanteSuperior,
                                 string? termoDeAdessaoUrl, string? fichaAssociacaoUrl, string? requerimento)
@@ -114,5 +124,21 @@ public sealed class Associado
 
         ValidacaoDeDominioException.When(string.IsNullOrEmpty(requerimento),
             "A requerimento judicial é obrigatório");
+    }
+
+    private void ValidaDominio(string urlDoRequerimento, string fichaAssociacaoUploadUrl,
+        string termoAdesaoUploadUrl, string cpfUploadUrl)
+    {
+        ValidacaoDeDominioException.When(string.IsNullOrEmpty(urlDoRequerimento),
+            "O link do requerimento é obrigatório");
+
+        ValidacaoDeDominioException.When(string.IsNullOrEmpty(fichaAssociacaoUploadUrl),
+            "O link da ficha é obrigatório");
+
+        ValidacaoDeDominioException.When(string.IsNullOrEmpty(termoAdesaoUploadUrl),
+            "O link do termo é obrigatório");
+
+        ValidacaoDeDominioException.When(string.IsNullOrEmpty(cpfUploadUrl),
+            "O link do cpf é obrigatório");
     }
 }

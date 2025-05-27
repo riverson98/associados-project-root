@@ -23,5 +23,6 @@ public class DominioParaDtoMappingProfile : Profile
         CreateMap<Endereco, EnderecoDto>().ReverseMap();
         CreateMap<ResultadoPaginado<Associado>, ResultadoPaginado<AssociadoDto>>().ReverseMap();
         CreateMap<AssociadoResumido, AssociadoResumidoDto>().ReverseMap();
+        CreateMap<UrlsDocumentos, UrlsDocumentosDto>().ReverseMap();
     }
 }
