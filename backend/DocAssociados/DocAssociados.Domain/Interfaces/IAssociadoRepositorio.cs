@@ -10,4 +10,6 @@ public interface IAssociadoRepositorio : IRepositorio<Associado>
     Task<AssociadoResumido> AtualizaParcialmenteAsync(AssociadoResumido entidadeResumida);
     Task<Associado> BuscaAssociadoComEndereco(Expression<Func<Associado, bool>> predicate);
     Task<AssociadoResumido> BuscaAssociadoResumidoAsync(Guid id);
+    Task<UrlsDocumentos> BuscaUrlsDoAssociadoAsync(Guid id);
+    Task AtualizaUrlsDoAssociadoAsync(Guid id, UrlsDocumentos urls);
 }

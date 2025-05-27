@@ -6,6 +6,11 @@ import { CommonModule } from '@angular/common';
 import { RegisterModalComponent } from '../modals/register-modal/register-modal.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ConfirmationModalComponent } from '../modals/confirmation-modal/confirmation-modal.component';
+import { UserService } from '../../../core/services/user/user.service';
+import { LoadingService } from '../../../core/services/loading/loading.service';
+import { finalize } from 'rxjs';
+import { UserModel } from '../../../core/models/user/userModel';
+import { UrlUpdated } from '../../../core/models/user/urlUpdated';
 
 @Component({
   selector: 'app-table',
@@ -28,7 +33,7 @@ export class TableComponent {
   @Output() onUserUpdated = new EventEmitter<void>();
   @Output() onUserDeleted = new EventEmitter<void>();
 
-  constructor (private dialog: MatDialog) {}
+  constructor (private dialog: MatDialog, private userService: UserService, private loading: LoadingService) {}
 
   ngOnChanges(changes: SimpleChanges) {
     if (changes['data']) {
@@ -56,15 +61,25 @@ export class TableComponent {
   }
 
   showUserDetails(id:string){
-    const associate = this.data.find(a => a.id === id);
-    console.log("valor do associado", associate)
-    this.dialog.open(RegisterModalComponent, {
-      data: associate,
-      width: '80%',
-      height: 'auto'
-    }).afterClosed().subscribe(() => {
-      this.onUserUpdated.emit();
-    });
+    const associate: UserModel = this.data.find(a => a.id === id);
+    if (associate) {
+      this.userService.updateDocsUrl(associate.id).pipe().subscribe({
+        next: (response) => {
+          associate.termoAdesaoDto.termoAdesaoUploadUrl = response.termoAdesaoUploadUrl;
+          associate.fichaAssociadoDto.fichaAssociacaoUploadUrl = response.fichaAssociacaoUploadUrl;
+          associate.cpfUploadUrl = response.cpfUploadUrl;
+          associate.requerimentoJudicialDto.urlDoRequerimento = response.urlDoRequerimento;
+
+          this.dialog.open(RegisterModalComponent, {
+            data: associate,
+            width: '80%',
+            height: 'auto'
+          }).afterClosed().subscribe(() => {
+            this.onUserUpdated.emit();
+          });
+        }
+      })
+    }
   }
 
   openConfirmationModal(id:string){

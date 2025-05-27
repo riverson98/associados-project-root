@@ -153,6 +153,14 @@ namespace DocAssociados.WebApi.Controllers
             return Ok(membrosDto);
         }
 
+        [HttpPut("atualiza-urls/{id:guid}")]
+        public async Task <ActionResult<UrlsDocumentosDto>> AtualizaDocumentos(Guid id)
+        {
+            var urls = await _servicoAssociado.AtualizaUrlDosDocumentosDoAssociadoAsync(id);
+
+            return Ok(urls);
+        }
+
         [HttpPost("cria-associado")]
         public async Task<ActionResult<AssociadoDto>> Post([FromForm] AssociadoDto associadoDto)
         {

@@ -189,11 +189,11 @@ export class RegisterModalComponent implements AfterViewInit{
       const files = Array.from(input.files);
 
       const associative = files.find(file =>
-        /ficha.*associativa/i.test(file.name.toLowerCase())
+        /ficha.*/i.test(file.name.toLowerCase())
       );
       
       const contract = files.find(file =>
-        /termo.*ades[aã]o/i.test(file.name.toLowerCase())
+        /termo.*/i.test(file.name.toLowerCase())
       );
 
       const order = files.find(file =>
@@ -255,7 +255,7 @@ export class RegisterModalComponent implements AfterViewInit{
           },
           error: (error) => {
             if(error.status === 404){
-              this.showErrorMessage("Nenhum representante encontrado com este codigo, se não possui um entre em contato conosco", true);
+              this.showErrorMessage("Nenhum representante encontrado com este codigo", true);
               event.preventDefault();
             }
             else
