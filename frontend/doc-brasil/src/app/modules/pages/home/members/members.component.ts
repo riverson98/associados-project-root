@@ -42,8 +42,7 @@ export class MembersComponent implements AfterViewInit{
       next: (response) => {
         this.membersData = response.itens;
         this.totalPages = response.totalDePaginas;
-      },
-      error: (err) => console.log(err)
+      }
     })
   }
     
@@ -76,11 +75,9 @@ export class MembersComponent implements AfterViewInit{
   }
 
   handleDeleteUser() {
-    console.log("usuario deletado atualizado:")
     this.reloadData(this.currentPage, this.itensPerPage,'')
       .subscribe({
         next: (response) => {
-        console.log("usuario deletado atualizado:", response)
         this.membersData = response.itens || [];
         this.hasNotFoundError = this.membersData.length === 0;
       }, 

@@ -3,9 +3,11 @@
         <span>{{ errorMessage }}</span>
     </div>
 
-    <span class="register-form__content--register__content--close" (click)="close()">
-        <i class="fa-solid fa-x"></i>
-    </span>
+    <div class="register-form__content--register__content--title">
+        <h3 class="register-form__content--register__content--title-text">Cadastro</h3>
+
+        <i class="fa-solid fa-x"  (click)="close()"></i>
+    </div>
 
     <mat-stepper class="register-form__content--register__content--stepper">
         <mat-step [stepControl]="personalData" label="Dados pessoais"
@@ -82,7 +84,7 @@
                 </mat-form-field>
 
                 <div>
-                    <button class="file-button margin" (click)="documentInput.click()"
+                    <button class="file-button" (click)="documentInput.click()"
                         [class.invalid]="personalData.get('documentPhoto')?.invalid && personalData.get('documentPhoto')?.touched">
                         <mat-icon>upload</mat-icon> Selecionar documento
                     </button>
@@ -96,10 +98,8 @@
                         <mat-icon>upload</mat-icon> Termos assinados
                     </button>
                     <input type="file" #termoInput (change)="onMultipleFilesSelected($event)" multiple hidden />
-                </div>
 
-
-                <div>
+                    
                     <button class="next" (click)="verifyForm($event, personalData)">Proximo</button>
                 </div>
             </form>
@@ -139,14 +139,16 @@
                     <input matInput placeholder="Ex. SC" formControlName="state" maxlength="2">
                 </mat-form-field>
 
-                <button class="file-button" (click)="proofInput.click()"
-                    [class.invalid]="addressData.get('proofOfResidence')?.invalid && addressData.get('proofOfResidence')?.touched">
-                    <mat-icon>upload</mat-icon> Comprovante de residencia
-                </button>
-                <input type="file" #proofInput (change)="onFileSelected($event, addressData, 'proofOfResidence')"
-                    hidden />
-
-                <button class="next" (click)="handleClick($event, personalData)">Cadastrar</button>
+                <div>
+                    <button class="file-button" (click)="proofInput.click()"
+                        [class.invalid]="addressData.get('proofOfResidence')?.invalid && addressData.get('proofOfResidence')?.touched">
+                        <mat-icon>upload</mat-icon> Comprovante de residencia
+                    </button>
+                    <input type="file" #proofInput (change)="onFileSelected($event, addressData, 'proofOfResidence')"
+                        hidden />
+    
+                    <button class="next" (click)="handleClick($event, personalData)">Cadastrar</button>
+                </div>
             </form>
         </mat-step>
 

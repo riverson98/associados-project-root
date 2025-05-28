@@ -34,13 +34,8 @@ builder.Services.Configure<AzureVaultConfig>(builder.Configuration.GetSection("A
 builder.Services.Configure<ApiGatewayConfig>(builder.Configuration.GetSection("ApiGatewayConfig"));
 
 //Config HttpClient
-builder.Services.AddHttpClient("DefaultHttpClient", client =>
-{
-    client.Timeout = TimeSpan.FromSeconds(10);
-
-}).AddPolicyHandler(HttpClientPolicys.GetRetryPolicy())
-   .AddPolicyHandler(HttpClientPolicys.GetCircuitBreakerPolicy())
-   .AddPolicyHandler(HttpClientPolicys.GetTimeoutPolicy());
+builder.Services.AddHttpClient("DefaultHttpClient")
+    .AddPolicyHandler(HttpClientPolicys.GetPolicyWrap());
 
 if (builder.Environment.IsProduction())
 {

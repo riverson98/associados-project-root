@@ -32,4 +32,13 @@ public static class HttpClientPolicys
     {
         return Policy.TimeoutAsync<HttpResponseMessage>(TimeSpan.FromSeconds(10));
     }
+
+    public static IAsyncPolicy<HttpResponseMessage> GetPolicyWrap()
+    {
+        var timeoutPolicy = GetTimeoutPolicy();
+        var retryPolicy = GetRetryPolicy();
+        var circuitBreakerPolicy = GetCircuitBreakerPolicy();
+
+        return Policy.WrapAsync(circuitBreakerPolicy, retryPolicy, timeoutPolicy);
+    }
 }
