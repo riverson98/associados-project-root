@@ -84,8 +84,8 @@
 
 /*--------------------------------------- button */
 .next,
-.previous{
-    margin-top: 2rem;
+.previous,
+.file-button {
     padding: 2.5rem 3.5rem;
     font-size: var(--font-size-st-sc);
     border: 1px solid transparent;
@@ -112,14 +112,14 @@
     align-items: center;
     justify-content: center;
     padding: 2rem 3rem;
-    border: 1px solid var(--color-secondary);
+    border-color: var(--color-secondary);
     background-color: var(--color-primary);
-    border-radius: 3rem;
-    display: flex;
+    border-radius: .8rem;
     font-size: var(--font-size-st-sc);
 
     &:hover {
         cursor: pointer;
+        background-color: var(--color-stroke);
     }
     
 }
@@ -149,9 +149,4 @@
     color: #2e7d32;
     padding: 1rem 2rem;
     border-radius: 3rem;
-}
-
-/*--------------------------------------- margin */
-.margin {
-    margin-top: 2rem;
 }

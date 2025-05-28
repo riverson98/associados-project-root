@@ -91,7 +91,6 @@ export class TableComponent {
       width: '50%',
       height: 'auto'
     }).afterClosed().subscribe((result) => {
-      console.log("Valor do result:", result)
       if(result === 'user-deleted'){
         this.onUserDeleted.emit();
       }

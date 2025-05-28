@@ -25,8 +25,6 @@ export class NavbarComponent implements OnInit{
  ngOnInit(): void {
   const photo = this.photoService.getImageUrlFromLocalStorage();
   this.photoService.imageUrl$.subscribe(img => this.photoPath = img);
-  console.log("valor da foto:", photo);
-  console.log("valor da foto temporaria:", this.temporaryPhotoPath);
 
   this.tokenExpiration = this.getTokenExpirationFromUrl(photo ?? "");
 

@@ -55,7 +55,7 @@ userPhoto: string | undefined;
 personalData = this._formBuilder.group({
     name: [{value: '', disabled: false}, [Validators.required, Validators.minLength(3)]],
     email: [{value: '', disabled: true}, [Validators.required, Validators.email]],
-    birthdate: [{value: '', disabled: false}, [Validators.required]],
+    birthdate: new FormControl<Date | string | null>({value: null, disabled: false}, Validators.required),
     gender: [{value: '', disabled: false}, Validators.required],
     codeAssociate: [{value: '', disabled: true}],
     photo: [null as File | null]
@@ -76,10 +76,12 @@ personalData = this._formBuilder.group({
       })
     ).subscribe({
       next: (userSummary) => {
+        const [year, month, day] = userSummary?.dataDeNascimento.split('-').map(Number);
+        const birthDate = new Date(year, month - 1, day);
         this.personalData.patchValue({
           name: userSummary.nome,
           email: userSummary.email,
-          birthdate: userSummary.dataDeNascimento,
+          birthdate: birthDate,
           gender: userSummary.genero,
           codeAssociate: userSummary.codigoAssociado,
         });
