@@ -18,6 +18,7 @@ stages:
     steps:
     - script: |
         echo "Garantindo permissões corretas na pasta SSL antes do checkout..."
+        sudo chown -R azureuser:azureuser nginx/ssl/live/appdocdobrasil.com.br
         sudo chown -R azureuser:azureuser /home/azureuser/linuxagent/_work/1/s/nginx/ssl || true
       displayName: 'Ajustar permissões SSL'
       
