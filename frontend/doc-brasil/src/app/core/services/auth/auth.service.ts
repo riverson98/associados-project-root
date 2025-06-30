@@ -98,10 +98,6 @@ export class AuthService {
     const payload = JSON.parse(atob(token.split('.')[1]));
     const exp = payload.exp;
     const now = Math.floor(Date.now() / 1000);
-    console.log("payload do token esplitado:", payload);
-    console.log("expiracao do token:", exp);
-    console.log("tempo de agora:", now);
-    console.log("retorno isso e true?: exp < now", exp < now)
     
     return exp < now;
   }
