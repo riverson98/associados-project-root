@@ -1,15 +1,18 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
+import { AuthService } from '../services/auth/auth.service';
 
 export const authGuard: CanActivateFn = (route, state) => {
   const router = inject(Router);
-  const token = localStorage.getItem('token');
+  const authService = inject(AuthService);
+  const token = authService.getToken();
 
-  if(token){
-    if(state.url === '/' || state.url === ''){
+  if(token && !authService.isTokenExpired(token)){
+    if(state.url === '/' || state.url === '' && !authService.isTokenExpired(token)){
       router.navigate(['/painel/associados']);
       return false;
     }
+
     return true;
   } 
   

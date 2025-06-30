@@ -67,6 +67,7 @@ public class AuthController : Controller
     }
 
     [HttpGet("refresh-token")]
+    [AllowAnonymous]
     public async Task<ActionResult> RefreshToken()
     {
         var refreshToken = HttpContext.Request.Cookies["refreshToken"];

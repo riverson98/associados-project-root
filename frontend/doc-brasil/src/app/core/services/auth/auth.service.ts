@@ -47,18 +47,27 @@ export class AuthService {
   logout(): void {
     this.loading.show();
     const userEmail = this.getUserEmail();
-    
-    this.http.get(
-      `${this.apiUrl}/logout/${userEmail}`
-    ).pipe(
-      finalize(() => this.loading.hide())
-    )
-    .subscribe(() => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('username');
-    localStorage.removeItem('userPhoto');
-    this.router.navigate(['/']); 
-    })
+    const token = this.getToken();
+
+    if(this.isTokenExpired(token!)){
+      localStorage.removeItem('token');
+      localStorage.removeItem('username');
+      localStorage.removeItem('userPhoto');
+      this.router.navigate(['/']); 
+    }
+    else {
+      this.http.get(
+        `${this.apiUrl}/logout/${userEmail}`
+      ).pipe(
+        finalize(() => this.loading.hide())
+      )
+      .subscribe(() => {
+        localStorage.removeItem('token');
+        localStorage.removeItem('username');
+        localStorage.removeItem('userPhoto');
+        this.router.navigate(['/']); 
+      })
+    }
   }
 
   getUserId(): string | undefined {
@@ -81,6 +90,21 @@ export class AuthService {
       return undefined;
     }
   };
+
+  isTokenExpired(token: string): boolean {
+    if(!token)
+      return true;
+    
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const exp = payload.exp;
+    const now = Math.floor(Date.now() / 1000);
+    console.log("payload do token esplitado:", payload);
+    console.log("expiracao do token:", exp);
+    console.log("tempo de agora:", now);
+    console.log("retorno isso e true?: exp < now", exp < now)
+    
+    return exp < now;
+  }
   
   getUserEmail(): string | undefined {
     const token = localStorage.getItem('token');

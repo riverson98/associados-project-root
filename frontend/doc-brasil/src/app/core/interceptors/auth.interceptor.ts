@@ -62,6 +62,7 @@ const handle401Error = (
       }),
       catchError(err => {
         isRefreshing = false;
+        authService.logout();
         return throwError(() => err);
       }),
     );
