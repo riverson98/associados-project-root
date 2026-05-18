@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\build\DocAssociados.Identity.WebApi.props" />
-</Project>
