@@ -26,7 +26,6 @@ export class ConfirmationModalComponent {
   public dialogRef: MatDialogRef<ConfirmationModalComponent>, private userService: UserService, private loading: LoadingService){}
 
   closeModal(message:string = ''){
-    console.log("Fechando o modal de confirmação")
     this.dialogRef.close(message);
   }
 

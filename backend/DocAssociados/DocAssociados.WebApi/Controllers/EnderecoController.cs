@@ -2,6 +2,7 @@
 using DocAssociados.Application.Interfaces;
 using DocAssociados.Application.Services;
 using DocAssociados.Service.Infra.CrossCutting.Logs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -10,6 +11,7 @@ namespace DocAssociados.Services.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = "Bearer", Policy = "AdminsOnly")]
     public class EnderecoController : ControllerBase
     {
         private readonly IServicoEndereco _servicoEndereco;
@@ -21,7 +23,7 @@ namespace DocAssociados.Services.WebApi.Controllers
             _logger = logger;
         }
 
-        [HttpGet("{id:guid}")]
+        [HttpGet("busca-endereco/{id:guid}")]
         public async Task<ActionResult<EnderecoDto>> BuscaEnderecoDoAssociado(Guid id)
         {
             _logger.Info($"Buscando o endereco do associado com o ID: {id}");

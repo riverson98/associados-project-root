@@ -1,8 +1,11 @@
 ﻿using Azure.Identity;
 using DocAssociados.ApiGateway.Config;
 using DocAssociados.ApiGateway.Handlers;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,8 +19,8 @@ if (builder.Environment.IsProduction())
     new DefaultAzureCredential()
     );
 
-    var apiKeyAuth = builder.Configuration["ChaveApiAssociadosAuth"];
-    var apiKeyAssociados = builder.Configuration["ChaveApiAssociados"];
+    var apiKeyAuth = builder.Configuration["AssociateAuthKey"];
+    var apiKeyAssociados = builder.Configuration["AssociateKey"];
 
     if (string.IsNullOrEmpty(apiKeyAuth) || string.IsNullOrEmpty(apiKeyAssociados))
         throw new InvalidOperationException("The api keys can't be null or empty");
@@ -77,19 +80,47 @@ builder.Services.AddCors(options =>
         {
            policy.WithOrigins("http://localhost:8080")
                  .AllowAnyMethod()
-                 .AllowAnyHeader();
+                 .AllowAnyHeader()
+                 .AllowCredentials();
         });
     }
     else
     {
         options.AddPolicy("FrontendPolicy", policy =>
             {
-                policy.WithOrigins("http://20.197.248.228:8080")
+                policy.WithOrigins("http://4.201.160.122:8080")
                       .AllowAnyMethod()
                     .AllowAnyHeader();
             });
     }
 });
+
+//Configure auth
+
+var secretKey = builder.Configuration["JWT:Key"]
+                    ?? throw new ArgumentException("Invalid secret key");
+
+
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+.AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero,
+            ValidIssuer = builder.Configuration["JWT:Issuer"],
+            ValidAudience = builder.Configuration["JWT:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
+                                                    .GetBytes(secretKey))
+        };
+    });
 
 var app = builder.Build();
 

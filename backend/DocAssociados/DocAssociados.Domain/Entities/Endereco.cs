@@ -50,6 +50,13 @@ public sealed class Endereco
         AssociadoId = associadoId;
     }
 
+    public void AtualizaUrl(string comprovanteDeResidenciaUpload)
+    {
+        ValidaDominio(comprovanteDeResidenciaUpload);
+
+        ComprovanteDeResidenciaUpload = comprovanteDeResidenciaUpload;
+    }
+
     private void ValidaDominio(string cep, string rua, string numero, string bairro, string cidade, 
         string estado, string comprovanteDeResidenciaUpload)
     {
@@ -71,6 +78,12 @@ public sealed class Endereco
         ValidacaoDeDominioException.When(string.IsNullOrEmpty(estado),
             "O estado é obrigatório");
 
+        ValidacaoDeDominioException.When(string.IsNullOrEmpty(comprovanteDeResidenciaUpload),
+            "O comprovante de residência é obrigatório");
+    }
+
+    private void ValidaDominio(string comprovanteDeResidenciaUpload)
+    {
         ValidacaoDeDominioException.When(string.IsNullOrEmpty(comprovanteDeResidenciaUpload),
             "O comprovante de residência é obrigatório");
     }

@@ -47,7 +47,7 @@ public static class DependencyInjection
     {
         var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 
-        string[] roleNames = { "Admin", "User" };
+        string[] roleNames = { "Administrador", "Diretor" };
 
         foreach (var roleName in roleNames)
         {

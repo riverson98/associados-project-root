@@ -7,12 +7,13 @@ import { PaginationParamsResponse } from "../../models/paginationParams/paginati
 import { AssociateSummary } from "../../models/user/associateSummary";
 import { AssociadoResumidoDto } from "../../models/user/AssociadoResumidoDto";
 import { ProfilePhotoRequest } from "../../models/user/ProfilePhotoRequest";
+import { UrlUpdated } from "../../models/user/urlUpdated";
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
-    apiUrl:string = 'http://localhost:5142/associado';
+    apiUrl:string = 'https://appdocdobrasil.com.br/associado';
 
     constructor(private http:HttpClient) {
         
@@ -20,7 +21,7 @@ export class UserService {
 
     createNewUser(userData: FormData): Observable<UserModel> {
         return this.http.post<UserModel>(
-                `${this.apiUrl}`, userData
+                `${this.apiUrl}/cria-associado`, userData
             );
     }
 
@@ -117,10 +118,16 @@ export class UserService {
             `${this.apiUrl}/adiciona-foto-de-perfil/${userId}`, userDataPhoto
         );
     }
+    
+    updateDocsUrl(id: string): Observable<UrlUpdated>{
+      return this.http.put<UrlUpdated>(
+            `${this.apiUrl}/atualiza-urls/${id}`, {}
+        );
+    }
 
     getUserName(): string{
         const username = localStorage.getItem('username')!;
-        const firstName = username.split(' ')[0];
+        const firstName = username?.split(' ')[0];
         return firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
     }
 }

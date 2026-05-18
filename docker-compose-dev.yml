@@ -46,7 +46,7 @@ services:
     build:
       context: ./backend/DocAssociados.Identity
       dockerfile: DocAssociados.Identity.WebApi/Dockerfile
-    container_name: associados-auth_service
+    container_name: associados-auth_service-dev
     ports:
       - "8091:8080"
     env_file:
@@ -59,7 +59,7 @@ services:
   associados_service-dev:
     build:
       context: ./backend/DocAssociados
-      dockerfile: DocAssociados.WebApi/Dockerfile
+      dockerfile: DocAssociados.WebApi/Dockerfile.dev
     container_name: associados_service-dev
     ports:
       - "8092:8080"
@@ -70,11 +70,11 @@ services:
     depends_on:
       - associadosDbDev
 
-  associados_frontend:
+  associados_frontend-dev:
     build:
       context: .
       dockerfile: /frontend/Dockerfile
-    container_name: associados_frontend
+    container_name: associados_frontend-dev
     ports:
       - "8080:80"
     networks:

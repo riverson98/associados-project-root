@@ -60,8 +60,6 @@ export class HomeComponent implements AfterViewInit{
   }
 
   loading (){
-    console.log("valor da rota anterior", this.previousRoute)
-    console.log("valor do current route ", this.currentRoute)
     if(this.router.url != this.currentRoute){
       this.loadingService.show();
     }

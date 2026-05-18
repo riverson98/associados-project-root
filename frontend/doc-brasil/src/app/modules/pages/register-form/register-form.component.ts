@@ -200,7 +200,6 @@ export class RegisterFormComponent implements OnInit{
             }
             else
             this.showErrorMessage("Algo deu errado", true);
-            console.log(error);
           }
         })
       }

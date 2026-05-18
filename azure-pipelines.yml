@@ -1,0 +1,80 @@
+trigger:
+- main
+
+resources:
+- repo: self
+
+variables:
+  tag: '$(Build.BuildId)'
+
+stages:
+- stage: Build
+  displayName: Build images with docker-compose
+  jobs:
+  - job: Build
+    displayName: Build using docker-compose
+    pool:
+      name: vm-linux  # Seu agente self-hosted na VM
+    steps:
+    - script: |
+        echo "Garantindo permissões corretas na pasta SSL antes do checkout..."
+        sudo chown -R azureuser:azureuser /home/azureuser/linuxagent/_work/1/s/nginx/ssl || true
+      displayName: 'Ajustar permissões SSL'
+      
+    - checkout: self
+
+    - task: AzureKeyVault@2
+      inputs:
+        azureSubscription: 'DevOps Service Connection'
+        KeyVaultName: 'DocBrasilKeyVault'
+        SecretsFilter: 'AssociateDbPassword,AuthDbPassword,AssociateAuthKey,AssociateKey,AzureBlobContainerSecretKey,AzureSecretKey,nginx-ssl-cert,nginx-priv-key'
+      name: FetchSecrets
+
+    - script: |
+        echo "Escrevendo certificados do Key Vault para arquivos PEM..."
+
+        sudo mkdir -p nginx/ssl/live/appdocdobrasil.com.br
+        echo -e "$NGINX_SSL_CERT" | base64 -d | sudo tee nginx/ssl/live/appdocdobrasil.com.br/fullchain.pem > /dev/null
+        echo -e "$NGINX_SSL_KEY"  | base64 -d | sudo tee nginx/ssl/live/appdocdobrasil.com.br/privkey.pem > /dev/null
+
+        echo "Certificados salvos:"
+        ls -l nginx/ssl/
+      displayName: 'Salvar certificados do Key Vault'
+      env:
+        NGINX_SSL_CERT: $(nginx-ssl-cert)
+        NGINX_SSL_KEY:  $(nginx-priv-key)
+
+    - script: |
+        cd frontend/doc-brasil
+        /usr/bin/npm ci
+        /usr/bin/ng build --configuration=production
+      displayName: 'Build frontend Angular'
+
+    - script: |
+        echo "Gerando .env.prod com variáveis substituídas..."
+
+        echo "ASPNETCORE_ENVIRONMENT=Production" > .env.prod
+        echo "BUILD_SOURCESDIRECTORY=${BUILD_SOURCESDIRECTORY}" >> .env.prod
+        echo "ConnectionStrings__MySqlConnection=Server=associados-db;Database=associadosdb;User=root;Password=${MYSQL_ASSOCIADOS_PASSWORD};" >> .env.prod
+        echo "ConnectionStrings__MySqlAuthConnection=Server=associadosAuth-db;Database=associadosAuthdb;User=root;Password=${MYSQL_ASSOCIADOS_AUTH_PASSWORD};" >> .env.prod
+
+        echo ".env.prod gerado:"
+        cat .env.prod
+      displayName: 'Gerar .env.prod com secrets'
+      workingDirectory: $(Build.SourcesDirectory)
+      env:
+        MYSQL_ASSOCIADOS_PASSWORD: $(AssociateDbPassword)
+        MYSQL_ASSOCIADOS_AUTH_PASSWORD: $(AuthDbPassword)
+        BUILD_SOURCESDIRECTORY: $(Build.SourcesDirectory)
+
+    - script: |
+        echo "Iniciando containers com docker-compose..."
+        export PATH=$PATH:/usr/bin
+        pwd
+        ls -la nginx/conf.d
+        ls -la $(Build.SourcesDirectory)/nginx/conf.d
+
+        /usr/bin/sudo docker compose --env-file .env.prod -f docker-compose.yml -f docker-compose-prod.yml down --remove-orphans
+        /usr/bin/sudo docker compose --env-file .env.prod -f docker-compose.yml -f docker-compose-prod.yml up -d --build
+      displayName: 'Subir containers com docker-compose'
+      workingDirectory: $(Build.SourcesDirectory)

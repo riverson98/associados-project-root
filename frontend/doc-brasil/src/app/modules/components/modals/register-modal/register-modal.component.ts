@@ -80,13 +80,16 @@ export class RegisterModalComponent implements AfterViewInit{
         finalize(() => this.loading.hide())
       ).subscribe({
         next: (response) => {
+          const [year, month, day] = this.associate?.dataDeNascimento.split('-').map(Number);
+          const birthDate = new Date(year, month - 1, day);
           this.personalData.patchValue({
             name: this.associate?.nome,
             email: this.associate?.email,
-            birthdate: this.associate?.dataDeNascimento,
+            birthdate: birthDate,
             gender: this.associate?.genero,
             tax: this.associate?.cpf,
             seniorCodeRepresentation: this.associate?.codigoRepresentanteSuperior,
+            codeRepresentation: this.associate?.codigoRepresentante,
             documentLink: this.associate?.cpfUploadUrl,
             codeAssociate: this.associate?.codigoAssociado,
             function: this.associate?.funcao,
@@ -128,7 +131,7 @@ export class RegisterModalComponent implements AfterViewInit{
   personalData = this._formBuilder.group({
     name: ['', [Validators.required, Validators.minLength(3)]],
     email: ['', [Validators.required, Validators.email]],
-    birthdate: ['', [Validators.required]],
+    birthdate: new FormControl<Date | string | null>(null, Validators.required),
     gender: ['', Validators.required],
     tax: ['', [Validators.required], [validateCpf]],
     seniorCodeRepresentation: ['', [Validators.required]],
@@ -189,17 +192,16 @@ export class RegisterModalComponent implements AfterViewInit{
       const files = Array.from(input.files);
 
       const associative = files.find(file =>
-        /ficha.*associativa/i.test(file.name.toLowerCase())
+        /ficha.*/i.test(file.name.toLowerCase())
       );
       
       const contract = files.find(file =>
-        /termo.*ades[aã]o/i.test(file.name.toLowerCase())
+        /termo.*/i.test(file.name.toLowerCase())
       );
 
       const order = files.find(file =>
         /requerimento.*/i.test(file.name.toLowerCase())
       );
-      console.log("valor do requerimento", order)
 
       if(!associative || !contract || !order){
         alert("Você deve anexar os três documentos: Ficha Associativa, Termo de Adesão e Requerimento judicial.");
@@ -255,12 +257,11 @@ export class RegisterModalComponent implements AfterViewInit{
           },
           error: (error) => {
             if(error.status === 404){
-              this.showErrorMessage("Nenhum representante encontrado com este codigo, se não possui um entre em contato conosco", true);
+              this.showErrorMessage("Nenhum representante encontrado com este codigo", true);
               event.preventDefault();
             }
             else
             this.showErrorMessage("Algo deu errado", true);
-            console.log(error);
           }
         })
       }
@@ -277,7 +278,7 @@ export class RegisterModalComponent implements AfterViewInit{
     if (date.length > 4) date = date.replace(/^(\d{2})\/(\d{2})(\d)/, '$1/$2/$3');
     
     (event.target as HTMLInputElement).value = date;
-     
+
     if (date.length === 10) {
       this.personalData.get('birthdate')!.setErrors(null);
       const [day, month, year] = date.split('/').map((part:any) => parseInt(part, 10));
@@ -298,8 +299,8 @@ export class RegisterModalComponent implements AfterViewInit{
         const formattedBirthDate = `${year}-${month}-${day}`;
         this.personalData.get('birthdate')!.setValue(formattedBirthDate);
         this.personalData.get('birthdate')!.updateValueAndValidity();
-        (event.target as HTMLInputElement).value = date;
         this.personalData.get('birthdate')!.setErrors(null);
+        (event.target as HTMLInputElement).value = date;
       }
     }
   }
@@ -325,8 +326,6 @@ export class RegisterModalComponent implements AfterViewInit{
       userData.append("fichaAssociadoDto.fichaAssociacaoUploadUrl", this.associate.fichaAssociadoDto.fichaAssociacaoUploadUrl);
       userData.append("termoAdesaoDto.termoAdesaoUploadUrl", this.associate.termoAdesaoDto.termoAdesaoUploadUrl);
       userData.append('requerimentoJudicialDto.urlDoRequerimento', this.associate.requerimentoJudicialDto.urlDoRequerimento);
-
-      console.log("Valor do requerimento:", this.associate.requerimentoJudicialDto.urlDoRequerimento);
 
       this.service.updateUser(userData, this.associate.id).pipe(
         finalize(() => this.loading.hide())
@@ -364,7 +363,7 @@ export class RegisterModalComponent implements AfterViewInit{
   getUserFromForm(): FormData {
     const userName = this.personalData.get('name')?.value;
     const userEmail = this.personalData.get('email')?.value;
-    const userBirthDate = new Date(this.personalData.get('birthdate')?.value!);   
+    const userBirthDate = new Date(this.personalData.get('birthdate')?.value!);
     const date = new Date(userBirthDate);
     const formattedDate = date.toISOString().split('T')[0];
     const userGender = this.personalData.get('gender')?.value;
@@ -389,7 +388,7 @@ export class RegisterModalComponent implements AfterViewInit{
     const userDataForm = new FormData();
     userDataForm.append('nome', userName!);
     userDataForm.append('email', userEmail!);
-    userDataForm.append('dataDeNascimento', formattedDate);
+      userDataForm.append('dataDeNascimento', formattedDate);
     userDataForm.append('genero', userGender!);
     userDataForm.append('cpf', tax!);
     userDataForm.append('CodigoRepresentanteSuperior', seniorCodeRepresentation!);

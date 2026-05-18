@@ -5,6 +5,7 @@ using DocAssociados.Domain.Entities;
 using DocAssociados.Service.Application.DTOs;
 using DocAssociados.Service.Application.Enums;
 using DocAssociados.Service.Infra.CrossCutting.Logs;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq.Expressions;
@@ -15,6 +16,7 @@ namespace DocAssociados.WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = "Bearer", Policy = "AdminsOnly")]
     public class AssociadoController : ControllerBase
     {
         private readonly IServicoAssociado _servicoAssociado;
@@ -153,7 +155,15 @@ namespace DocAssociados.WebApi.Controllers
             return Ok(membrosDto);
         }
 
-        [HttpPost]
+        [HttpPut("atualiza-urls/{id:guid}")]
+        public async Task <ActionResult<UrlsDocumentosDto>> AtualizaDocumentos(Guid id)
+        {
+            var urls = await _servicoAssociado.AtualizaUrlDosDocumentosDoAssociadoAsync(id);
+
+            return Ok(urls);
+        }
+
+        [HttpPost("cria-associado")]
         public async Task<ActionResult<AssociadoDto>> Post([FromForm] AssociadoDto associadoDto)
         {
             _logger.Info($"Iniciando criação de associado com e-mail: {associadoDto.Email}");

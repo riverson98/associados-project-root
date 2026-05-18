@@ -7,7 +7,7 @@ using DocAssociados.Service.Infra.CrossCutting.AzureIdentity;
 using System.Web;
 using Microsoft.Extensions.Caching.Memory;
 using System.Globalization;
-using System.ComponentModel;
+using Azure.Identity;
 
 namespace DocAssociados.Application.Services;
 
@@ -45,18 +45,9 @@ public class ServicoAzure<T> : IServicoAzure<T> where T : IUploadable
                     
                     using (var stream = dto.FotoDoArquivo.OpenReadStream())
                     {
-                        BlobClient blobClient;
-                        string baseUrl;
-
-                        if (_opcoes.UsaSasToken)
-                        {
-                            var sasToken = await CriaSasToken(nomeDoArquivo);
-                            baseUrl = $"{_opcoes.ServicoBlobUrl}/{_opcoes.NomeDoContainer}/{nomeDoArquivo}?{sasToken}";
-                        }
-                        else
-                            baseUrl = $"{_opcoes.ServicoBlobUrl}/{_opcoes.NomeDoContainer}/{nomeDoArquivo}";
-
-                        blobClient = new BlobClient(new Uri(baseUrl));
+                        var sasToken = await CriaSasToken(nomeDoArquivo);
+                        var baseUrl = $"{_opcoes.ServicoBlobUrl}/{_opcoes.NomeDoContainer}/{nomeDoArquivo}?{sasToken}";
+                        var blobClient = new BlobClient(new Uri(baseUrl));
 
                         await blobClient.UploadAsync(stream, true);
 
@@ -148,7 +139,7 @@ public class ServicoAzure<T> : IServicoAzure<T> where T : IUploadable
             return string.Empty;
 
         if (!TokenEstaExpirado(urlTokenSas))
-            return string.Empty;
+            return urlTokenSas;
 
         var nomeDoArquivo = ExtraiNomeDoArquivoDaUrl(urlTokenSas);
         var tokenAtualizado = await CriaSasToken(nomeDoArquivo);
@@ -158,21 +149,11 @@ public class ServicoAzure<T> : IServicoAzure<T> where T : IUploadable
 
     public async Task DeleteBlobAsync(string url)
     {
-        BlobClient blobClient;
-        string baseUrl;
-
         var nomeDoArquivo = ExtraiNomeDoArquivoDaUrl(url);
-
-        if (_opcoes.UsaSasToken)
-        {
-            var sasToken = await CriaSasToken(nomeDoArquivo);
-            baseUrl = $"{_opcoes.ServicoBlobUrl}/{_opcoes.NomeDoContainer}/{nomeDoArquivo}?{sasToken}";
-        }
-        else
-            baseUrl = $"{_opcoes.ServicoBlobUrl}/{_opcoes.NomeDoContainer}/{nomeDoArquivo}";
-
-        blobClient = new BlobClient(new Uri(baseUrl));
-        var response = await blobClient.DeleteIfExistsAsync();
+        var sasToken = await CriaSasToken(nomeDoArquivo);
+        var baseUrl = $"{_opcoes.ServicoBlobUrl}/{_opcoes.NomeDoContainer}/{nomeDoArquivo}?{sasToken}";
+        var blobClient = new BlobClient(new Uri(baseUrl));
+        await blobClient.DeleteIfExistsAsync();
     }
 
     private async Task<string> CriaSasToken(string nomeDoArquivo)

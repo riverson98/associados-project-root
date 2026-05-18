@@ -15,7 +15,7 @@ import { PhotoService } from '../../../core/services/user/photo.service';
 export class NavbarComponent implements OnInit{
   photoPath:string | null = '';
   temporaryPhotoPath:string | null = '';
-  tokenExpiration: Date | undefined;
+  tokenExpiration!: Date | null;
   userId = this.authService.getUserId()!;
 
   constructor(private userService: UserService, private loading: LoadingService, private authService: AuthService, private photoService: PhotoService){}
@@ -23,19 +23,15 @@ export class NavbarComponent implements OnInit{
  @Input({alias: 'userName', required: true}) userName!: string;
 
  ngOnInit(): void {
-  const savedExpiration = localStorage.getItem('photoTokenExpiration');
-  
   const photo = this.photoService.getImageUrlFromLocalStorage();
   this.photoService.imageUrl$.subscribe(img => this.photoPath = img);
-  console.log("valor da foto:", photo);
-  console.log("valor da foto temporaria:", this.temporaryPhotoPath);
-  
-  if(savedExpiration){
-      this.tokenExpiration = new Date(savedExpiration);
-    }
+
+  if(photo) {
+      this.tokenExpiration = this.getTokenExpirationFromUrl(photo);
+  }
 
   if (this.tokenExpiration && new Date(this.tokenExpiration).getTime() > Date.now()){
-      this.photoPath = localStorage.getItem('photoPath') ?? this.setDefaultImageByGender(null);
+      this.photoPath = photo ?? this.setDefaultImageByGender(null);
     } 
   else {
       this.getPhoto();
@@ -55,7 +51,7 @@ getPhoto(){
         this.photoPath = this.setDefaultImageByGender(userSummary.genero);
       }
     });
-  };
+};
 
  formatUserName(): string {
   return this.userService.getUserName();
@@ -65,9 +61,9 @@ getPhoto(){
     this.loading.show();
     this.authService.logout();
     this.loading.hide();
-  }
+ }
 
-  setDefaultImageByGender(gender:string | null): string {
+ setDefaultImageByGender(gender:string | null): string {
     if(gender){
       switch(gender){
         case 'M':
@@ -83,5 +79,11 @@ getPhoto(){
       else {
         return "../../../../assets/logo1.png";
       }
+ }
+
+ getTokenExpirationFromUrl(url: string): Date | null {
+    const params = new URL(url).searchParams;
+    const se = params.get("se");
+    return se ? new Date(se) : null;
   }
 }

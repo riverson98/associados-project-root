@@ -49,37 +49,34 @@ main {
                 flex-direction: column;
                 font-size: var(--font-size-st-sc);
                 position: relative;
+                color: var(--color-tertiary-m);
+
+                label {
+                    font-weight: 700;
+                }
 
                 &--input {
                     width: 100%;
                     padding: 2rem 3rem;
                     font-size: var(--font-size-st-sc);
-                    color: var(--color-primary);
-                    background-color: var(--color-quartenary-m);
+                    
+                    background-color: var(--color-stroke);
                     border: solid 1px transparent;
                     border-radius: 1rem;
                     cursor: text;
+                    
                 }
-            }
-        }
-
-        &--forgot {
-            font-size: var(--font-size-st-sc);
-            font-weight: 300;
-            align-self: flex-end;
-            position: relative;
-            transition: all 0.5s ease-in-out;
-
-            &:hover {
-                color: var(--color-tertiary-m);
-                cursor: pointer;
+                
+                i {
+                    color: var(--color-tertiary-m);
+                }
             }
         }
 
         &--submit {
             width: 100%;
 
-            & input {
+             input {
                 width: 100%;
                 padding: 2rem 3rem;
                 font-size: var(--font-size-st-sc);
@@ -108,12 +105,34 @@ main {
       }
 
       #toggle-password-login:hover {
-        color: var(--color-primary);
+        color: var(--color-tertiary-m);
       }
 
-    @media screen and (max-width: 900px){
+    @media screen and (max-width: 500px){
         .auth-login__container {
             width: 100%;
+
+            &--title {
+                span {
+                    color: var(--color-secondary);
+                }
+            }
+
+            &--form {
+                &__fields {
+                    color: var(--color-secondary);
+                }
+            }
+
+            &--submit {
+                input {
+                    background-color: var(--color-secondary);
+
+                    &:hover {
+                        background-color: var(--color-secondary-m);
+                    }
+                }
+            }
         }
 
         #toggle-password {

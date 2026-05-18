@@ -7,13 +7,13 @@ import { AddressModel } from "../../models/address/addressModel";
   providedIn: 'root'
 })
 export class AddressService {
-    apiUrl:string = 'http://localhost:5142/endereco';
+    apiUrl:string = 'https://appdocdobrasil.com.br/endereco';
     
     constructor(private http:HttpClient) {}
 
     getAddressByAssociateId(id: string): Observable<AddressModel>{
         return this.http.get<AddressModel>(
-           `${this.apiUrl}/${id}`
+           `${this.apiUrl}/busca-endereco/${id}`
         );
     }
 }
