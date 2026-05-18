@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\build\DocAssociados.Services.WebApi.props" />
-</Project>
